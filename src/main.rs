@@ -16,17 +16,17 @@ use crate::tables::prepare_table_tsm_pricing_data_weekly;
 fn main() {
     dotenvy::dotenv().ok();
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-
-    let connect_to_db = PostgresClient::connect(&database_url, NoTls);
-
-    let mut db_client = connect_to_db.expect("An error happened when attempting to connect to the DB");
-
-    prepare_table_tsm_pricing_data_weekly(&mut db_client);
-
     let mut scheduler = Scheduler::new();
 
-    scheduler.every(1.day()).at("8:13 pm").run(move || {
+    scheduler.every(1.day()).at("8:13 pm").run( || {
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
+        let connect_to_db = PostgresClient::connect(&database_url, NoTls);
+
+        let mut db_client = connect_to_db.expect("An error happened when attempting to connect to the DB");
+
+        prepare_table_tsm_pricing_data_weekly(&mut db_client);
+
         let http_client = Client::new();
 
         let tsm_auth_body: types::TsmAuthBody = types::TsmAuthBody {

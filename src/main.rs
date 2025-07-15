@@ -18,7 +18,7 @@ fn main() {
 
     let mut scheduler = Scheduler::new();
 
-    scheduler.every(1.day()).at("8:13 pm").run( || {
+    scheduler.every(7.day()).at("10:00 am").run( || {
         let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
         let connect_to_db = PostgresClient::connect(&database_url, NoTls);
@@ -144,6 +144,3 @@ fn main() {
         thread::sleep(Duration::from_millis(100)); // Check every 100ms
     }
 }
-
-// TODO: Add dates
-// TODO: If dates are already stored from another day, then skip that day
